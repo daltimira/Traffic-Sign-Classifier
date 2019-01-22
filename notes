@@ -5,3 +5,6 @@ add regularization features like drop out or L2 regularization to make sure the 
 tune the hyperparameters
 improve the data pre-processing with steps like normalization and setting a zero mean
 augment the training data by rotating or shifting images or by changing colors
+
+
+ToDo:
