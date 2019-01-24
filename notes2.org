@@ -12,7 +12,8 @@ ToDo:
 1- Include an exploratory and visualization of the dataset.
   - Plotting traffic sign images.
 
-*2- Implement the basic LeNet arquitecture, train and test. Check validation accuracy.
+DONE- Implement the basic LeNet arquitecture, train and test. Check validation accuracy.
+  - Implement a normalization and grayscale images.
   - Change the number of classes, and possible preprocessing.
   - Reset the kernel and clear the output to ensure fresh start.
   - Clear the cell that loads the MNIST data and replace it with code to load the traffic sign data.
@@ -21,15 +22,24 @@ ToDo:
   - Traffic signs are in color, input depth is 3.
   - The output layer has 43 classes.
 
-3- Design improvements on the model and training process until get validation accuracy to 0.93.
+*- Design improvements on the model and training process until get validation accuracy to 0.93.
   - Think about over or underfitting and regularization techniques.
   - Do some alternative preprocessing techniques (normalization, rgb to grayscale). Documenmt them.
   - Number of examples per label. Increment the number of examples.
   - Generate fake data.
   - Describe the characteristics of the arquitecture, type of model used, size of each layer.
   - Change the optimizer (Adam optimzer, stochastic gradient descent but better?). Try different optimizers.
-  - Play with hyperparameters for training and describe how best result was obtained: batch size, #epochs, type of optimizer.
+  * Play with hyperparameters for training and describe how best result was obtained: batch size, #epochs, type of optimizer.
+EPOCHS = 30, BATCH_SIZE=128, ADAM OPTIMZER: 0.927 (still a bit jumpy, but the last two, three epochs stayed about 0.92).
+EPOCHS = 100, BATCH_SIZE=128, ADAM OPTIMZER: 0.93x
+
   - Augmenting the training set might help improve model performance. Common data augmentation techniques include rotation, translation, zoom, flips, and/or color perturbation. These techniques can be used individually or combined.
+    - For translating the images, we can check "coords" which are the bounding box of the traffic sign.
+
+
+  - Issue with rotating images: the data imbalance issue? If you are adding the rotated version of images to those classes whose number of image is lower, then you might need to use some other data augmentation techniques like histogram equalization, changing brightness, flipping, etc. https://keras.io/preprocessing/image/
+  - Or you could add a few more convolution layer to increase the training accuracy I assume you are trying to improve
+  - If you are improving the validation accuracy, then I might assume your training accuracy is already quite high (98,99%), then your model might be over-fitting. In that case, you will need to apply regularization, which you could use dropout layer. https://www.tensorflow.org/api_docs/python/tf/layers/dropout
 
 4- Describe how the model solution was obtained.
 
