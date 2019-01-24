@@ -1,0 +1,43 @@
+To improve the model:
+
+experiment with different network architectures, or just change the dimensions of the LeNet layers
+add regularization features like drop out or L2 regularization to make sure the network doesn't overfit the training data
+tune the hyperparameters
+improve the data pre-processing with steps like normalization and setting a zero mean
+augment the training data by rotating or shifting images or by changing colors
+
+
+ToDo:
+
+1- Include an exploratory and visualization of the dataset.
+  - Plotting traffic sign images.
+
+*2- Implement the basic LeNet arquitecture, train and test. Check validation accuracy.
+  - Change the number of classes, and possible preprocessing.
+  - Reset the kernel and clear the output to ensure fresh start.
+  - Clear the cell that loads the MNIST data and replace it with code to load the traffic sign data.
+  - Delete the code that adds the images since the traffic sign images are already 32x32 pixels.
+  - The traffic sign data does not come with validation set. Use the 'train test' split function in the SKLearn library to slice off a validation set from the trainig set (training of 20%).
+  - Traffic signs are in color, input depth is 3.
+  - The output layer has 43 classes.
+
+3- Design improvements on the model and training process until get validation accuracy to 0.93.
+  - Think about over or underfitting and regularization techniques.
+  - Do some alternative preprocessing techniques (normalization, rgb to grayscale). Documenmt them.
+  - Number of examples per label. Increment the number of examples.
+  - Generate fake data.
+  - Describe the characteristics of the arquitecture, type of model used, size of each layer.
+  - Change the optimizer (Adam optimzer, stochastic gradient descent but better?). Try different optimizers.
+  - Play with hyperparameters for training and describe how best result was obtained: batch size, #epochs, type of optimizer.
+  - Augmenting the training set might help improve model performance. Common data augmentation techniques include rotation, translation, zoom, flips, and/or color perturbation. These techniques can be used individually or combined.
+
+4- Describe how the model solution was obtained.
+
+5- Test with new model images.
+
+6- Project write up.
+
+7- Additional exercise:
+  - Visualize each layer.
+  - Visualize the neural network's state on test images.
+  - Check other improvements of the model.
