@@ -1,0 +1,2 @@
+INFO:tensorflow:Restoring parameters from ./lenet
+Test Accuracy = 0.885

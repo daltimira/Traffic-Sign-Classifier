@@ -22,20 +22,30 @@ DONE- Implement the basic LeNet arquitecture, train and test. Check validation a
   - Traffic signs are in color, input depth is 3.
   - The output layer has 43 classes.
 
-*- Design improvements on the model and training process until get validation accuracy to 0.93.
+After implementing the basic LeNet with epoch=10, learning rate= 0.001, batch size = 128. validation accuracy obtained = 0.872.
+
+* Design improvements on the model and training process until get validation accuracy to 0.93.
+    DONE Do some alternative preprocessing techniques (normalization, rgb to grayscale). Documenmt them.
+
+    DONE Play with hyperparameters for training and describe how best result was obtained: batch size, #epochs, type of optimizer.
+      LEARNING: 0.001, EPOCHS = 30, BATCH_SIZE=128, ADAM OPTIMZER: 0.927 (still a bit jumpy, but the last two, three epochs stayed about 0.92).
+      LEARNING: 0.001, EPOCHS = 100, BATCH_SIZE=128, ADAM OPTIMZER: 0.93x
+      Changing learning to 0.01: get stuch at 0.050 validation accuracy.
+      Changing learning to 0.0005 and EPOCHS = 200. 0.93x accuracy, did not improve too much.
+      LEARNING: 0.001, EPOCHS = 100, BATCH_SIZE=256, ADAM OPTIMZER: 0.92 (increasing the batch size did not help)
+      LEARNING: 0.001, EPOCHS = 300, BATCH_SIZE= 64, ADAM OPTIMIZER: seems best performance. validation accuracy 0.94, but test is 0.92x.
+
+      After playing with the hyperparameters, seems that learning 0.001, with epochs= 300, smaller batch seems result in a better performance, validation accuracy of 0.94.
+      Now would be time for increasing the number of samples per label and augmenting the training set.
+
+  * Number of examples per label. Increment the number of examples.
+  * Generate fake data.
+  * Augmenting the training set might help improve model performance. Common data augmentation techniques include rotation, translation, zoom, flips, and/or color perturbation. These techniques can be used individually or combined.
+      - For translating the images, we can check "coords" which are the bounding box of the traffic sign.
+
   - Think about over or underfitting and regularization techniques.
-  - Do some alternative preprocessing techniques (normalization, rgb to grayscale). Documenmt them.
-  - Number of examples per label. Increment the number of examples.
-  - Generate fake data.
   - Describe the characteristics of the arquitecture, type of model used, size of each layer.
   - Change the optimizer (Adam optimzer, stochastic gradient descent but better?). Try different optimizers.
-  * Play with hyperparameters for training and describe how best result was obtained: batch size, #epochs, type of optimizer.
-EPOCHS = 30, BATCH_SIZE=128, ADAM OPTIMZER: 0.927 (still a bit jumpy, but the last two, three epochs stayed about 0.92).
-EPOCHS = 100, BATCH_SIZE=128, ADAM OPTIMZER: 0.93x
-
-  - Augmenting the training set might help improve model performance. Common data augmentation techniques include rotation, translation, zoom, flips, and/or color perturbation. These techniques can be used individually or combined.
-    - For translating the images, we can check "coords" which are the bounding box of the traffic sign.
-
 
   - Issue with rotating images: the data imbalance issue? If you are adding the rotated version of images to those classes whose number of image is lower, then you might need to use some other data augmentation techniques like histogram equalization, changing brightness, flipping, etc. https://keras.io/preprocessing/image/
   - Or you could add a few more convolution layer to increase the training accuracy I assume you are trying to improve
