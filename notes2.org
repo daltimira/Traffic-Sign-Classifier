@@ -42,6 +42,10 @@ After implementing the basic LeNet with epoch=10, learning rate= 0.001, batch si
   * Generate fake data.
   * Augmenting the training set might help improve model performance. Common data augmentation techniques include rotation, translation, zoom, flips, and/or color perturbation. These techniques can be used individually or combined.
       - For translating the images, we can check "coords" which are the bounding box of the traffic sign.
+      - https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html
+      - Data augmentation is one way to fight overfitting (when have few samples). However augmented images are highly correlated.
+
+    EPOCH 100, BATCH SIZE 128, WITH AGUMENTED SAMPLES:  
 
   - Think about over or underfitting and regularization techniques.
   - Describe the characteristics of the arquitecture, type of model used, size of each layer.
