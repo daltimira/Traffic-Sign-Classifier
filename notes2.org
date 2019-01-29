@@ -38,14 +38,24 @@ After implementing the basic LeNet with epoch=10, learning rate= 0.001, batch si
       After playing with the hyperparameters, seems that learning 0.001, with epochs= 300, smaller batch seems result in a better performance, validation accuracy of 0.94.
       Now would be time for increasing the number of samples per label and augmenting the training set.
 
-  * Number of examples per label. Increment the number of examples.
-  * Generate fake data.
-  * Augmenting the training set might help improve model performance. Common data augmentation techniques include rotation, translation, zoom, flips, and/or color perturbation. These techniques can be used individually or combined.
-      - For translating the images, we can check "coords" which are the bounding box of the traffic sign.
-      - https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html
-      - Data augmentation is one way to fight overfitting (when have few samples). However augmented images are highly correlated.
+    * Balance data.
+      First attemp have been in augmenting the images and by doing this, balance the data. I have attempted to create 3000 samples for each class (initial training + the necessary augmented data to achieve reach 3000 samples).
+      With just rotation and translation, achieved a validation accuracy of 0.856 with 30 epochs and 128 bach size. So not good. 
 
-    EPOCH 100, BATCH SIZE 128, WITH AGUMENTED SAMPLES:  
+
+    * Number of examples per label. Increment the number of examples.
+    * Generate fake data.
+    * Augmenting the training set might help improve model performance. Common data augmentation techniques include rotation, translation, zoom, flips, and/or color perturbation. These techniques can be used individually or combined.
+        - For translating the images, we can check "coords" which are the bounding box of the traffic sign.
+        - https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html
+        - Data augmentation is one way to fight overfitting (when have few samples). However augmented images are highly correlated.
+
+
+    EPOCH 30, BATCH SIZE 128, WITH AGUMENTED SAMPLES:
+    Augmenting the samples, just translation, makes worse validation accuracy.
+    Duplicating the training samples, makes a good training validation (0.93), and good test accuracy (0.929)
+    Using ImageGeneration without parameters, I get a training validation of 0.944, but test accuracy (0.929)
+    With just rotation: training validation (0.932), but validation test: 0.914.
 
   - Think about over or underfitting and regularization techniques.
   - Describe the characteristics of the arquitecture, type of model used, size of each layer.
