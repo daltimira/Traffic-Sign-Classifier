@@ -24,7 +24,7 @@ DONE- Implement the basic LeNet arquitecture, train and test. Check validation a
 
 After implementing the basic LeNet with epoch=10, learning rate= 0.001, batch size = 128. validation accuracy obtained = 0.872.
 
-* Design improvements on the model and training process until get validation accuracy to 0.93.
+DONE Design improvements on the model and training process until get validation accuracy to 0.93.
     DONE Do some alternative preprocessing techniques (normalization, rgb to grayscale). Documenmt them.
 
     DONE Play with hyperparameters for training and describe how best result was obtained: batch size, #epochs, type of optimizer.
@@ -64,7 +64,34 @@ After implementing the basic LeNet with epoch=10, learning rate= 0.001, batch si
 
 
 
-  - Think about over or underfitting and regularization techniques.
+  DONE Think about over or underfitting and regularization techniques.
+    - Implemented dropout regularization technique. The keep probability for the training set 0.5, and for evaluation set to 1.0.
+    - I have put a dropout after each activation function in the LeNet arquitecture.
+    - After running batches of 128, 30 epochs, and with data augmentation of 600: validation accuracy: 0.912, test accuracy: 0.912.
+    rotation_range=25,
+    zoom_range=0.3,
+    horizontal_flip=False,
+    vertical_flip=False,
+    fill_mode='nearest',
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    brightness_range=[0.5, 1.5]
+    - Now with only zoom range and shift. validation accuracy: 0.924, test accuracy: 0.924.
+    - By removing the augmentation samples, but keeping regularization: validation accuracy: 0.944, test accuracy: 0.931 !!!!!
+    - By removing the last two layers of dropout, increase validation accuracy (and still without any agumentation samples): 0.928. We keep all droputs.
+    - Putting back all the dropuuts, but increasing the probability of keeping activation from 0.5 to 0.7: validation accury: 0.956, test accuracy: 0.943 !!!!! wow!!!
+
+    Regularization made really improve the model.
+
+    It seems that keeping probability of 0.7 is a good choice.
+    - Putting back 600 augmentation images. Validation accuracy: 0.949. Test accuracy: 0.945. Best so far!
+    - Putting back the brightness back: validation accuracy: 0.949. Test accuracy: 0.933. Let's remove the brightness.
+    - Running back with augmented images, got a validation accuracy of 0.92x.
+    - Removing the augmented images: 0.958 (and test accuracy: 0.94).
+    - Seems that with 100 epochs, augmented images, and batch size of 64 can be enough for a good model.
+    - With 300 epochs and bactch size of 64, 0.958 (validation accuracy), and test validation (0.940) 
+
+
   - Describe the characteristics of the arquitecture, type of model used, size of each layer.
   - Change the optimizer (Adam optimzer, stochastic gradient descent but better?). Try different optimizers.
 
@@ -72,11 +99,12 @@ After implementing the basic LeNet with epoch=10, learning rate= 0.001, batch si
   - Or you could add a few more convolution layer to increase the training accuracy I assume you are trying to improve
   - If you are improving the validation accuracy, then I might assume your training accuracy is already quite high (98,99%), then your model might be over-fitting. In that case, you will need to apply regularization, which you could use dropout layer. https://www.tensorflow.org/api_docs/python/tf/layers/dropout
 
-4- Describe how the model solution was obtained.
+* Clean code and make the final run with the final model.
 
-5- Test with new model images.
+5- Test with new model images.0.940
 
 6- Project write up.
+  - Describe how the model solution was obtained.
 
 7- Additional exercise:
   - Visualize each layer.
