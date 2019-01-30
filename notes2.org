@@ -89,7 +89,7 @@ DONE Design improvements on the model and training process until get validation 
     - Running back with augmented images, got a validation accuracy of 0.92x.
     - Removing the augmented images: 0.958 (and test accuracy: 0.94).
     - Seems that with 100 epochs, augmented images, and batch size of 64 can be enough for a good model.
-    - With 300 epochs and bactch size of 64, 0.958 (validation accuracy), and test validation (0.940) 
+    - With 300 epochs and bactch size of 64, 0.958 (validation accuracy), and test validation (0.940)
 
 
   - Describe the characteristics of the arquitecture, type of model used, size of each layer.
@@ -99,14 +99,24 @@ DONE Design improvements on the model and training process until get validation 
   - Or you could add a few more convolution layer to increase the training accuracy I assume you are trying to improve
   - If you are improving the validation accuracy, then I might assume your training accuracy is already quite high (98,99%), then your model might be over-fitting. In that case, you will need to apply regularization, which you could use dropout layer. https://www.tensorflow.org/api_docs/python/tf/layers/dropout
 
-* Clean code and make the final run with the final model.
+DONE Clean code and make the final run with the final model.
 
-5- Test with new model images.0.940
+* Test with new model images.
 
 6- Project write up.
   - Describe how the model solution was obtained.
+  - Re-read the notebook if anything else need to be cleaned.
 
 7- Additional exercise:
   - Visualize each layer.
   - Visualize the neural network's state on test images.
   - Check other improvements of the model.
+
+
+
+  # As we have inbalanced data we can calculate the weights so that learn more for the less frequent data?
+  from sklearn.utils import class_weight
+  class_weights = class_weight.compute_class_weight('balanced',
+                                                   np.unique(y_train),
+                                                   y_train)
+  print(class_weights)
