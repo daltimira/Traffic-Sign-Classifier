@@ -102,6 +102,7 @@ DONE Design improvements on the model and training process until get validation 
 DONE Clean code and make the final run with the final model.
 
 * Test with new model images.
+  - The only remaining task is the print the five top probabilities. 
 
 6- Project write up.
   - Describe how the model solution was obtained.
