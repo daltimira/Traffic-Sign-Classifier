@@ -1,14 +1,6 @@
-# **Traffic Sign Recognition** 
+# **Traffic Sign Recognition Project**
 
-## Writeup
-
-### You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
-
----
-
-**Build a Traffic Sign Recognition Project**
-
-The goals / steps of this project are the following:
+The goals / steps of this project were the following:
 * Load the data set (see below for links to the project data set)
 * Explore, summarize and visualize the data set
 * Design, train and test a model architecture
@@ -19,153 +11,186 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/visualization.jpg "Visualization"
-[image2]: ./examples/grayscale.jpg "Grayscaling"
-[image3]: ./examples/random_noise.jpg "Random Noise"
-[image4]: ./examples/placeholder.png "Traffic Sign 1"
-[image5]: ./examples/placeholder.png "Traffic Sign 2"
-[image6]: ./examples/placeholder.png "Traffic Sign 3"
-[image7]: ./examples/placeholder.png "Traffic Sign 4"
-[image8]: ./examples/placeholder.png "Traffic Sign 5"
-
-## Rubric Points
-### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
+[image1]: ./results/frequencyTrainingSet.png "Distribution Samples Training Set"
+[image2]: ./results/frequencyValidationSet.png "Distribution Samples Validation Set"
+[image3]: ./results/frequencyTestSet.png "Distribution Samples Test Set"
+[image4]: ./results/exampleSampleImage.png "Example of Traffic Sign"
+[image5]: ./results/exampleAugmentedImage.png "Example of Augmented Image"
+[image6]: ./data/newImages/bumpyRoads.jpeg "Bumpy road sign"
+[image7]: ./data/newImages/img1s.jpeg "Turn right ahead sign"
+[image8]: ./data/newImages/img2s.jpeg "Stop sign"
+[image9]: ./data/newImages/img4s.jpeg "No entry sign"
+[image10]: ./data/newImages/speedlimits.jpeg "Speed limit 70 sign"
 
 ---
-### Writeup / README
-
-#### 1. Provide a Writeup / README that includes all the rubric points and how you addressed each one. You can submit your writeup as markdown or pdf. You can use this template as a guide for writing the report. The submission includes the project code.
-
-You're reading it! and here is a link to my [project code](https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/Traffic_Sign_Classifier.ipynb)
 
 ### Data Set Summary & Exploration
 
-#### 1. Provide a basic summary of the data set. In the code, the analysis should be done using python, numpy and/or pandas methods rather than hardcoding results manually.
+The first step for the project was to load the data. The data came already with the train, validation and test set separatly.
 
-I used the pandas library to calculate summary statistics of the traffic
-signs data set:
+I used the pandas library to calculate summary statistics of the traffic signs data set:
 
-* The size of training set is ?
-* The size of the validation set is ?
-* The size of test set is ?
-* The shape of a traffic sign image is ?
-* The number of unique classes/labels in the data set is ?
+* The size of training set was 34799 images.
+* The size of the validation set was 4410 images.
+* The size of test set was 12630 images.
+* The shape of a traffic sign image was (32x32x3)
+* The number of unique classes/labels in the data set was 43.
 
-#### 2. Include an exploratory visualization of the dataset.
+After this first analysis, I analysed the number of samples per class and checked if the distribution was uniform. After printing the number of samples per class (see notebook) it is clear that the number of samples per class was not distributed uniformally. For example, looking at the training set, the class #41 had only 210 samples, and there were other classes with over 2000 samples.
 
-Here is an exploratory visualization of the data set. It is a bar chart showing how the data ...
+Looking at the number of samples per class in the training set:
 
 ![alt text][image1]
 
-### Design and Test a Model Architecture
-
-#### 1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
-
-As a first step, I decided to convert the images to grayscale because ...
-
-Here is an example of a traffic sign image before and after grayscaling.
+For the validation set:
 
 ![alt text][image2]
 
-As a last step, I normalized the image data because ...
-
-I decided to generate additional data because ... 
-
-To add more data to the the data set, I used the following techniques because ... 
-
-Here is an example of an original image and an augmented image:
+And for the test set:
 
 ![alt text][image3]
 
-The difference between the original data set and the augmented data set is the following ... 
+The three sets (training, validation and test) had a similar distribution. However, as stated before, it is clear that one of the problems was that the number of samples per class were not distributed unifomally across classes.
+
+An example of the images of the class number 13:
+
+![alt text][image4]
+
+### Data Generation (data augmentation)
+
+Since for training, the more data you have, the better, I implemented some code that augment existing data *from the trainign set* (rotate, translate and zoom existing images) so that the model could see images in different positions and orientations. I threfore generated new images from existing images, and I used the ImageDataGenerator from Keras where you can introduce which image augmentation operations you want to use to generate the new images.
+
+The final image augmentations operations (e.g. rotation, etc.) were chosen based on (1) what can make sense to do (e.g. flipping horizontally the image was discarded as then the signs with text would appear with the text reversed, which can be unexpected in the real world), and (2) the validation accuracy obtained after adding these new images on the model.
+
+The modifications I used to augment the images were as follows: rotation of 15 degrees, zoom of 20% and translation hozizontally and vertically of 30% of the width and height of the image. These transformations would still generate images that you can expect to see in the real world.
+
+I also tried different approaches for augmenting the images: (1) change the number of augmented images to generate, (2) calculate the number of images to augment based on the already existing samples per class to try to even the number of samples per class.
+
+The best results obtained were with the approach 2. However, I also observed that generating too many augmented images the model started producing worse results that with fewer augmented images. One of the possible reasons for this could be is that augmented images might have high correlation between them.
+
+So, I decided to define the number of samples per class to 700, so classes in the training set that had fewer number of samples than 700, I generated the required number of augmented samples until reaching the 700 samples. Those classes that already had more than 700 samples, I would not add new images. With this procedure I tried to even even a bit the number of samples per class in the whole set but without introducing too much correlation between the images.
+
+The total number of augmented images (in the training set) were: 9081.
+
+An example of an augmented image is:
+
+![alt text][image5]
+
+### Design and Test a Model Architecture
+
+As a first step, I decided to convert the image to grayscale as color images might introduce additional information on the model that might not be too much relevant for training the model to classify traffic signs. After converting to grayscale, I also normalized the images: [0-255] - 128) / 128. I converted to grayscale and normalized the images to the three sets (training, validation and test sets).
+
+For the training data, I also shuffled the data as I wanted to prevent an ordering effect of the data on the training of the network.
+
+#### Arquitecture
+
+I started by using the LeNet arquitecture, and pre-processed the images by converting them to grayscale and normalizing the images. With 10 epochs and learning rate of 0.001, and batch size of 128 I obtained a 0.872 validation accuracy.
+
+The first modifcations were tunning the hyperparameters. Some results obtained were as follows (without augmenting the images in the training set):
 
 
-#### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
+| Learning rate         		|     Epochs	        					| Batch size | *Validation accuracy*
+|:---------------------:|:---------------------------------------------:|:---------------------------------------------:|:---------------------------------------------:|
+| 0.001         		| 30   							| 128 | 0.92 |
+|0.001   | 100   | 128    | 0.93x  |
+|0.01   | 100   | 128   | 0.05   |
+|0.0005   | 200    | 128   | 0.93x   |
+|0.001   | 100   | 256  | 0.92   |
+|0.001   | 300   | 64   | 0.94   |
 
-My final model consisted of the following layers:
+After playing with some hyperparameters, seemed that the best results were obtained with epoch = 300, and smaller batch size (64).
 
-| Layer         		|     Description	        					| 
-|:---------------------:|:---------------------------------------------:| 
-| Input         		| 32x32x3 RGB image   							| 
-| Convolution 3x3     	| 1x1 stride, same padding, outputs 32x32x64 	|
+Afterwards I decided to start adding the augmented samples in the training set. Some observations I made: (1) only augmenting the samples with translation did not help in increasing the validation accuracy (maybe because this can generate more correlation between images), (2) changing the brightness did not help in increasing the validation accuracy, (3) augmenting all the classes similarly, i.e. adding the same number of images to each class did not help in increasing the validation accuracy (I tried to add additional 3000 samples in each class, I did get < 0.9 in validation accuracy).
+
+After doing some tests I decided I would only use the following operations when augmenting the images: rotation, translation and zooming.
+
+Based on point 3 mentioned beforehand, I decided that I might need to balance the data. That is why I decided that the number of augmented images per class should depend on the already existing number of samples per class. First I tried with making that each class has a minimum of 1500 images, and I got a validation accuracy of 0.909. A lower value such as 600 minimum images per class, I got better results: validation accuracy of 0.938. That means that I needed to be careful on the number of augmented images (adding too many augmented images can worsed the model during the training).
+
+ After doing a few tests, and changing the hyperparameters, and the number of minimum images per class, I realised was hard to get a validation accuracy over 0.94. At that point I decided to try other techniques to improve the model, such as the regularization.
+
+I implemented a dropout regularization technique by putting a dropout layer after each activation function. First I set a dropout with a probability of keeping the neuron of 0.5, but then I realised that a higher probability such as 0.7 I obtained better validation accuracy (I obtained a validation accuracy of 0.95 with a probability of 0.7). Note that the dropout was for the training stage. For the evaluation stage, I set the probability to 1.0 (no dropout).
+
+To summarise, the decisions and observations made to obtain the final model were as follows:
+- Not all type of augmentation operations helped in improve the model. For example, altering the brightness did not help in improving the model.
+- It is good to use image augmentation in order to even the number of samples per class, but it is important not too use it too much because this can cause some problems in the training.
+- Dropout really helps in improving the model so it was added to the existing model arquitecture, and that the probability of keeping neurons can be important. This helped prevent overfitting.
+
+The final model arquitecture implement was the following one:
+
+| Layer         		|     Description	        					|
+|:---------------------:|:---------------------------------------------:|
+| Input         		| 32x32x3 RGB image   							|
+| Convolution 5x5     	| 1x1 stride, valid padding, outputs 28x28x6 	|
 | RELU					|												|
-| Max pooling	      	| 2x2 stride,  outputs 16x16x64 				|
-| Convolution 3x3	    | etc.      									|
-| Fully connected		| etc.        									|
-| Softmax				| etc.        									|
-|						|												|
-|						|												|
- 
+| DROPOUT   | 0.7 probability   |
+| Max pooling	      	| 2x2 stride,  outputs 14x14x16 				|
+| Convolution 5x5	    | 1x1 stride, valid padding, outputs 10x10x6      									|
+| RELU					|												|
+| DROPOUT   | 0.7 probability   |
+| Max pooling	      	| 2x2 stride,  outputs 5x5x16 				|
+| Flatten		| Outputs: 400        									|
+| Fully connected		| Input: 400, Output: 120        									|
+| RELU					|												|
+| DROPOUT   | 0.7 probability   |
+| Fully connected		| Input: 120, Output: 84        									|
+| RELU					|												|
+| DROPOUT   | 0.7 probability   |
+| Fully connected	(logits)	| Input: 84, Output: 43        									|
 
 
-#### 3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
+And the parameters used for this model were (after doing set of testings described beforehand):
+- Epochs: 100.
+- Learning rate: 0.001.
+- Batch size: 64.
+- Probability dropout: 0.7.
+- Augmenting images: rotation range=15,zoom_range=0.2, width_shift_range=0.3, height_shift_range=0.3.
+- Minimum number of samples per class: 700 (used for augmenting the images).
+- Use Adam optimizer in order to minimise the loss function.
 
-To train the model, I used an ....
+The final model results were:
+* validation set accuracy of 0.95.
+* test set accuracy of 0.934.
 
-#### 4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
-
-My final model results were:
-* training set accuracy of ?
-* validation set accuracy of ? 
-* test set accuracy of ?
-
-If an iterative approach was chosen:
-* What was the first architecture that was tried and why was it chosen?
-* What were some problems with the initial architecture?
-* How was the architecture adjusted and why was it adjusted? Typical adjustments could include choosing a different model architecture, adding or taking away layers (pooling, dropout, convolution, etc), using an activation function or changing the activation function. One common justification for adjusting an architecture would be due to overfitting or underfitting. A high accuracy on the training set but low accuracy on the validation set indicates over fitting; a low accuracy on both sets indicates under fitting.
-* Which parameters were tuned? How were they adjusted and why?
-* What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
-
-If a well known architecture was chosen:
-* What architecture was chosen?
-* Why did you believe it would be relevant to the traffic sign application?
-* How does the final model's accuracy on the training, validation and test set provide evidence that the model is working well?
- 
-
-### Test a Model on New Images
-
-#### 1. Choose five German traffic signs found on the web and provide them in the report. For each image, discuss what quality or qualities might be difficult to classify.
-
-Here are five German traffic signs that I found on the web:
-
-![alt text][image4] ![alt text][image5] ![alt text][image6] 
-![alt text][image7] ![alt text][image8]
-
-The first image might be difficult to classify because ...
-
-#### 2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
-
-Here are the results of the prediction:
-
-| Image			        |     Prediction	        					| 
-|:---------------------:|:---------------------------------------------:| 
-| Stop Sign      		| Stop sign   									| 
-| U-turn     			| U-turn 										|
-| Yield					| Yield											|
-| 100 km/h	      		| Bumpy Road					 				|
-| Slippery Road			| Slippery Road      							|
+The test accuracy of 0.934 shows that the model is working well with images that have not seen before.
 
 
-The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This compares favorably to the accuracy on the test set of ...
+### Test the model on new images
 
-#### 3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
+I have chosen five traffic signs I found on the web:
+Bumpy road sign:
+![alt text][image6]
+Turn right ahead sign:
+![alt text][image7]
+Stop sign:
+![alt text][image8]
+No entry sign:
+![alt text][image9]
+Speed limit 70 sign:
+![alt text][image10]
 
-The code for making predictions on my final model is located in the 11th cell of the Ipython notebook.
+The quality that probably might cause more difficulty in classiy is the text as there is not many signs that have text in it. So probably the Stop sign might be the more difficult to classify.
 
-For the first image, the model is relatively sure that this is a stop sign (probability of 0.6), and the image does contain a stop sign. The top five soft max probabilities were
+The predictions for each of the images were as follows:
 
-| Probability         	|     Prediction	        					| 
-|:---------------------:|:---------------------------------------------:| 
-| .60         			| Stop sign   									| 
-| .20     				| U-turn 										|
-| .05					| Yield											|
-| .04	      			| Bumpy Road					 				|
-| .01				    | Slippery Road      							|
-
-
-For the second image ... 
-
-### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
-#### 1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
+| Image			        |     Prediction	        					|
+|:---------------------:|:---------------------------------------------:|
+| Turn right ahead sign     			| Turn right ahead sign 										|
+| Stop sign					| Speed limit 50 km/h											|
+| Bumpy road sign      		| Bumpy road sign   									|
+| No entry sign	      		| No entry sign					 				|
+| Speed limit 70 sign			| Speed limit 70 sign      							|
 
 
+The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This gives a lower percentage compared to the test set (0.934). This could be expected as I only tested with 5 new images and only getting one prediction wrong, this would decrease  significantly the accuracy on the new images.
+
+Looking at the softmax 5 top probabilities for each prediction (see notebook), we can see that the model was quite sure about the last three images (bumpy road sign, no entry sign and speed limit 70 sign), with a probability of >0.99. Although the turn right ahead was predicted correctly, the probability was quite close (0.387) with the second highest probability, which is the Stop sign (0.312). Interestingly, the stop sign was predicted incorrectly, and the this sign was not in the first five top probabilities.
+
+The top five soft max probabilities were
+
+| Probability         	|     Prediction	        					|
+|:---------------------:|:---------------------------------------------:|
+| .387         			| Turn right ahead sign   									|
+| .62     				| Stop sign 										|
+| .99					| Bumpy road sign											|
+| .99	      			| No entry sign					 				|
+| .99				    | Speed limit 70 sign      							|
